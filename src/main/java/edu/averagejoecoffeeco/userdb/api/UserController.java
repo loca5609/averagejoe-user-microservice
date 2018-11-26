@@ -54,13 +54,17 @@ public class UserController {
     }
 
     @PutMapping("/credit/{id}/{credit}")
-    public ResponseEntity<User> updateCredit(@PathVariable String id, @PathVariable Double credit,
-            @RequestBody User user) {
+    public ResponseEntity<User> updateCredit(@PathVariable String id, @PathVariable Double credit) {
         Optional<User> userData = userRepo.findById(id);
         if (userData.isPresent()) {
             logger.info("Adjusting user credit with id " + id + " by " + credit);
             User savedUser = userData.get();
-            // FIXME: add testing for valid input
+            // don't let a users credit go below 0
+            // this is buisness logic that should reside in the buisness microservice as per
+            // best practices
+            if ((savedUser.getCredit() - credit) < 0) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
             savedUser.setCredit(savedUser.getCredit() - credit);
             User updatedUser = userRepo.save(savedUser);
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
