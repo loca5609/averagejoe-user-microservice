@@ -6,13 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.slf4j.Logger;
@@ -22,6 +21,7 @@ import edu.averagejoecoffeeco.userdb.IUserRepository;
 import edu.averagejoecoffeeco.userdb.UserdbApplication;
 import edu.averagejoecoffeeco.userdb.api.entities.User;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserdbApplication.class);
@@ -53,7 +53,7 @@ public class UserController {
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 
-    @PutMapping("/credit/{id}/{credit}")
+    @GetMapping("/credit/{id}/{credit}")
     public ResponseEntity<User> updateCredit(@PathVariable String id, @PathVariable Double credit) {
         Optional<User> userData = userRepo.findById(id);
         if (userData.isPresent()) {
